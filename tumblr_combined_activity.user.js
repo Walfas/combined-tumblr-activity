@@ -9,6 +9,13 @@
 
 maxNotes = 50;
 
+activity = jQuery(".activity");
+activityLi = activity.parent().clone().appendTo("#dashboard_controls_open_blog");
+activity.attr("href", activity.attr("href")+"?all").text("Notifications");
+activity.attr("class","notifications");
+var nStyle = jQuery("<style>.controls_section li .notifications:after { background-position: 12px -439px; }</style>");
+jQuery('html > head').append(nStyle);
+
 if (/activity\/.*\?all/.test(window.location.href)) {
     jQuery("#ui_activity_feed").addClass("ui_notes").empty();
     jQuery(".section.first.divider").remove();
@@ -75,8 +82,4 @@ if (/activity\/.*\?all/.test(window.location.href)) {
         );
     }
 }
-else {
-    activity = jQuery(".activity");
-    activityLi = activity.parent().clone().appendTo("#dashboard_controls_open_blog");
-    activity.attr("href", activity.attr("href")+"?all").text("Notifications");
-}
+
