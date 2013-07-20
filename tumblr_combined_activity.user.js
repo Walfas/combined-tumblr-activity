@@ -9,6 +9,7 @@
 
 var maxNotes = 50;
 
+// Add notifications link to sidebar
 var notifications = jQuery(".activity").first();
 notifications.parent().clone().appendTo("#dashboard_controls_open_blog");
 notifications.attr("href", notifications.attr("href")+"?all").text("Notifications");
@@ -17,20 +18,20 @@ var nStyle = jQuery("<style>.controls_section li .notifications:after { backgrou
 jQuery('html > head').append(nStyle);
 
 if (/activity\/.*\?all/.test(window.location.href)) {
-    var activity = jQuery(".activity").first();
-    activity.parent().attr("class","");
+    jQuery(".activity").first().parent().attr("class","");
 
-    jQuery("#ui_activity_feed").addClass("ui_notes").empty();
+    var activity_feed = jQuery("#ui_activity_feed").addClass("ui_notes").empty();
     jQuery(".section.first.divider").remove();
     jQuery(".section.last").css("padding-top","10px");
-    users = [];
 
+    // Get list of users from sidebar dropdown
+    users = [];
     jQuery("#popover_blogs").find(".blog_title").each(function() {
         users.push(jQuery(this).attr("href").replace("/blog/",""))
     });
 
+    // Fetch activities page for each user and add all notes to an array
     notes = [];
-
     deferreds = users.map(function(user) {
         return jQuery.ajax({
             url: "http://www.tumblr.com/activity/" + user + "/day",
@@ -40,6 +41,7 @@ if (/activity\/.*\?all/.test(window.location.href)) {
         });
     });
 
+    // When all notes fetched, sort and display
     jQuery.when.apply(null, deferreds).done(function() {
         notes.sort(function(a,b) {
             return getTimestamp(b) - getTimestamp(a);
@@ -53,9 +55,10 @@ if (/activity\/.*\?all/.test(window.location.href)) {
                 addDateSeparator(notes[i+1]);
         }
 
-        af = jQuery("#ui_activity_feed").addClass("ui_notes").empty().append(notes);
+        activity_feed.append(notes);
     });
 
+    // Utility functions
     getTimestamp = function(obj) {
         return jQuery(obj).attr('data-timestamp');
     }
@@ -75,13 +78,20 @@ if (/activity\/.*\?all/.test(window.location.href)) {
         var timestamp = getTimestamp(elem);
         var date = new Date(timestamp*1000);
 
+        // Absolute Date
         var dayOfWeek = days[ date.getDay() ];
         var day = date.getDate();
         var month = months[ date.getMonth() ];
         var dateString = dayOfWeek + ', ' + month + ' ' + day;
 
+        // Relative Date
+        var timeDiff = Math.abs((new Date()).getTime() - date.getTime());
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+        var rDateString = diffDays ? (diffDays + " days ago") : "Today";
+
         jQuery(elem).prepend(jQuery('<div/>', {'class': 'date_header clearfix'})
-            .append(jQuery('<div/>', {'class': 'part_full_date', 'text': dateString}))
+            .append(jQuery('<div/>', {'class': 'part_relative_date', 'text': dateString}))
+            .append(jQuery('<div/>', {'class': 'part_full_date', 'text': rDateString}))
         );
     }
 }
