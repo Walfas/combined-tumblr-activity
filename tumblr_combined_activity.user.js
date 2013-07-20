@@ -7,16 +7,19 @@
 // @copyright    2013, Walfie
 // ==/UserScript==
 
-maxNotes = 50;
+var maxNotes = 50;
 
-activity = jQuery(".activity");
-activityLi = activity.parent().clone().appendTo("#dashboard_controls_open_blog");
-activity.attr("href", activity.attr("href")+"?all").text("Notifications");
-activity.attr("class","notifications");
+var notifications = jQuery(".activity").first();
+notifications.parent().clone().appendTo("#dashboard_controls_open_blog");
+notifications.attr("href", notifications.attr("href")+"?all").text("Notifications");
+notifications.attr("class","notifications");
 var nStyle = jQuery("<style>.controls_section li .notifications:after { background-position: 12px -439px; }</style>");
 jQuery('html > head').append(nStyle);
 
 if (/activity\/.*\?all/.test(window.location.href)) {
+    var activity = jQuery(".activity").first();
+    activity.parent().attr("class","");
+
     jQuery("#ui_activity_feed").addClass("ui_notes").empty();
     jQuery(".section.first.divider").remove();
     jQuery(".section.last").css("padding-top","10px");
@@ -82,4 +85,6 @@ if (/activity\/.*\?all/.test(window.location.href)) {
         );
     }
 }
+else
+    notifications.parent().attr("class","");
 
