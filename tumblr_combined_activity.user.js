@@ -77,6 +77,7 @@ if (/activity\/.*\?all/.test(window.location.href)) {
         var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
         var timestamp = getTimestamp(elem);
         var date = new Date(timestamp*1000);
+        date.setHours(0, 0, 0, 0);
 
         // Absolute Date
         var dayOfWeek = days[ date.getDay() ];
@@ -85,9 +86,17 @@ if (/activity\/.*\?all/.test(window.location.href)) {
         var dateString = dayOfWeek + ', ' + month + ' ' + day;
 
         // Relative Date
-        var timeDiff = Math.abs((new Date()).getTime() - date.getTime());
-        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
-        var rDateString = diffDays ? (diffDays + " days ago") : "Today";
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        var timeDiff = Math.abs(today.getTime() - date.getTime());
+        var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24)); 
+
+        var rDateString = "";
+        switch (diffDays) {
+        case 0: rDateString = "Today"; break;
+        case 1: rDateString = "Yesterday"; break;
+        default: rDateString = diffDays + " days ago"; break;
+        }
 
         jQuery(elem).prepend(jQuery('<div/>', {'class': 'date_header clearfix'})
             .append(jQuery('<div/>', {'class': 'part_relative_date', 'text': dateString}))
