@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Combined Tumblr Activity
 // @namespace    http://ee.walfas.org
-// @version      0.1
+// @version      0.2
 // @description  Pulls activity from all your sideblogs
 // @match        http://www.tumblr.com/*
 // @copyright    2013, Walfie
@@ -17,7 +17,7 @@ notifications.attr("class","notifications");
 var nStyle = jQuery("<style>.controls_section li .notifications:after { background-position: 12px -439px; }</style>");
 jQuery('html > head').append(nStyle);
 
-if (/activity\/.*\?all/.test(window.location.href)) {
+if (/activity.*\?all/.test(window.location.href)) {
     jQuery(".activity").first().parent().attr("class","");
 
     var activity_feed = jQuery("#ui_activity_feed").addClass("ui_notes").empty();
