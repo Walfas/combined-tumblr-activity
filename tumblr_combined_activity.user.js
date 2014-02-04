@@ -4,6 +4,7 @@
 // @version      0.2
 // @description  Pulls activity from all your sideblogs
 // @match        http://www.tumblr.com/*
+// @match        https://www.tumblr.com/*
 // @copyright    2013, Walfie
 // ==/UserScript==
 
