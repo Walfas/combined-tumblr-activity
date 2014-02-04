@@ -35,7 +35,7 @@ if (/activity.*\?all/.test(window.location.href)) {
     notes = [];
     deferreds = users.map(function(user) {
         return jQuery.ajax({
-            url: "http://www.tumblr.com/activity/" + user + "/day",
+            url: "//www.tumblr.com/activity/" + user + "/day",
         }).done(function (html) {
             uiNotes = jQuery.makeArray(jQuery(html).find(".ui_note"));
             notes = notes.concat(uiNotes);
