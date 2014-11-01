@@ -1,26 +1,27 @@
 // ==UserScript==
 // @name         Combined Tumblr Activity
 // @namespace    http://ee.walfas.org
-// @version      0.2
+// @version      0.3
 // @description  Pulls activity from all your sideblogs
 // @match        http://www.tumblr.com/*
 // @match        https://www.tumblr.com/*
-// @copyright    2013, Walfie
+// @copyright    2013-2014, Walfie
 // ==/UserScript==
 
 var maxNotes = 50;
+var exclude = [];
 
 // Add notifications link to sidebar
-var notifications = jQuery(".activity").first();
-notifications.parent().clone().appendTo("#dashboard_controls_open_blog");
-notifications.attr("href", notifications.attr("href")+"?all").text("Notifications");
-notifications.attr("class","notifications");
-var nStyle = jQuery("<style>.controls_section li .notifications:after { background-position: 12px -439px; }</style>");
-jQuery('html > head').append(nStyle);
+jQuery(function() {
+    var activity = jQuery(".activity").first().parent();
+    var notifications = activity.clone().insertBefore(activity).find('a');
+    notifications.attr("href", notifications.attr("href")+"?all");
+    notifications.addClass("notifications");
+    notifications.find('.hide_overflow').text("Notifications");
+    notifications.find('i').toggleClass('icon_activity icon_analytics');
+});
 
 if (/activity.*\?all/.test(window.location.href)) {
-    jQuery(".activity").first().parent().attr("class","");
-
     var activity_feed = jQuery("#ui_activity_feed").addClass("ui_notes").empty();
     jQuery(".section.first.divider").remove();
     jQuery(".section.last").css("padding-top","10px");
@@ -28,7 +29,10 @@ if (/activity.*\?all/.test(window.location.href)) {
     // Get list of users from sidebar dropdown
     users = [];
     jQuery("#popover_blogs").find(".blog_title").each(function() {
-        users.push(jQuery(this).attr("href").replace("/blog/",""))
+        var user = jQuery(this).attr("href").replace("/blog/","");
+        if (exclude.indexOf(user) == -1) {
+            users.push(user);
+        }
     });
 
     // Fetch activities page for each user and add all notes to an array
@@ -105,6 +109,4 @@ if (/activity.*\?all/.test(window.location.href)) {
         );
     }
 }
-else
-    notifications.parent().attr("class","");
 
